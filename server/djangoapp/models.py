@@ -30,7 +30,7 @@ class CarModel(models.Model):
         default=SEDAN
     )
     def __str__(self):
-        return "Maker:"+self.car_make.name+"\nmodel:"+self.car_model+" Year:"+str(self.car_year.year)+\
+        return "Maker:"+self.car_make.name+"\nmodel:"+self.car_model+" Year:"+str(self.car_year).split('-')[0]+\
             "\nDetails:\n   -"+self.description+"\n   -"+self.car_type+"\n Available at:"+str(self.dealer_id)+"(Dealer id)"
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
