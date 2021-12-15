@@ -29,6 +29,8 @@ APPEND_SLASH = True
 
 ALLOWED_HOSTS = ["localhost","pkishino.au-syd.cf.appdomain.cloud"]
 
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
 
 # Application definition
 

@@ -8,30 +8,30 @@ class CarMake(models.Model):
         return "Name:"+self.name+"\nDescription:"+self.description
 
 class CarModel(models.Model):
-    maker = models.ForeignKey(CarMake, on_delete=models.CASCADE)
-    name = models.CharField(null=False, max_length=30, default='car model')
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    car_model = models.CharField(null=False, max_length=30, default='car model')
     description = models.CharField(max_length=1000)
-    model_year = models.DateField(null=True)
+    car_year = models.DateField(null=True)
     dealer_id = models.IntegerField(default=1)
     SUV = 'SUV'
     WAGON = 'Wagon'
     SEDAN = 'Sedan'
     CONVERTIBLE = 'Convertible'
-    model_types = [
+    car_types = [
         (SUV, 'SUV'),
         (WAGON, 'Wagon'),
         (SEDAN, 'Sedan'),
         (CONVERTIBLE, 'Convertible')
     ]
-    model_type = models.CharField(
+    car_type = models.CharField(
         null=False,
         max_length=20,
-        choices=model_types,
+        choices=car_types,
         default=SEDAN
     )
     def __str__(self):
-        return "Maker:"+self.maker.name+"\nmodel:"+self.name+" Year:"+self.model_year+\
-            "\nDetails:\n   -"+self.description+"\n   -"+self.model_type+"\n Available at:"+self.dealer_id+"(Dealer id)"
+        return "Maker:"+self.car_make.name+"\nmodel:"+self.car_model+" Year:"+str(self.car_year.year)+\
+            "\nDetails:\n   -"+self.description+"\n   -"+self.car_type+"\n Available at:"+str(self.dealer_id)+"(Dealer id)"
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 
