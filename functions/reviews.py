@@ -26,12 +26,15 @@ def main(dict):
         # Check that the document exists in the database
         if my_document.exists():
             return my_document
-    elif 'dealerId' in dict.keys():
-        selector={"id":{"$eq":dict['dealerId']}}
+    elif "dealerId" in dict.keys():
+        selector={"dealership":{"$eq":dict['dealerId']}}
         query = Query(reviews,fields=['id','name','dealership','review','purchase','purchase_date','car_make','car_model','car_year'],selector=selector)
-        results={"rows":[]}
+        results=[]
         for result in QueryResult(query):
-            results["rows"].append(result)
-        return results
+            results.append(result)
+        if results:
+            return {"result":results}
+        else:
+            return {"error":"The database is empty"}
     else:
         return {"err": 'No parameters provided.' }
