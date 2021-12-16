@@ -1,3 +1,12 @@
+#
+#
+# main() will be run when you invoke this action
+#
+# @param Cloud Functions actions accept a single parameter, which must be a JSON object.
+#
+# @return The output of this action, which must be a JSON object.
+#
+#
 from cloudant.client import Cloudant
 from cloudant.query import Query
 from cloudant.result import QueryResult
@@ -21,15 +30,19 @@ def main(dict):
     except (requests.exceptions.RequestException, ConnectionResetError) as err:
         print("connection error")
         return {"error": err}
+    
     if "state" in dict.keys():
         selector={"st":{"$eq":dict['state']}}
-    elif 'dealerId' in dict.keys():
+    elif "dealerId" in dict.keys():
         selector={"id":{"$eq":dict['dealerId']}}
     else:
         selector={"id":{"$gte":0}}
         
     query = Query(dealerships,fields=['id','city','state','st','address','zip','lat','long','short_name','full_name'],selector=selector)
-    results={"rows":[]}
+    results=[]
     for result in QueryResult(query):
-        results["rows"].append(result)
-    return results
+        results.append(result)
+    if results:
+        return {"result":results}
+    else:
+        return {"error":"The database is empty"}
