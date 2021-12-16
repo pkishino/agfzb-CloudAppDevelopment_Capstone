@@ -78,8 +78,7 @@ def get_dealerships(request):
             dealerships = get_dealers_from_cf(url,state=state)
         else:
             dealerships = get_dealers_from_cf(url)
-        # return render(request, 'djangoapp/index.html', {"dealerships":dealerships})
-        return HttpResponse(' '.join([dealer.short_name for dealer in dealerships]))
+        return render(request, 'djangoapp/index.html', {'dealerships':dealerships})
 
 
 def get_dealer_details(request, dealer_id):
@@ -87,8 +86,7 @@ def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         url = api_base+"/review"
         reviews = get_dealer_reviews_from_cf(url, dealerId=dealer_id)
-        # return render(request, 'djangoapp/index.html', {"reviews":reviews})
-        return HttpResponse(' '.join(review.review+' '+review.sentiment for review in reviews))
+        return render(request, 'djangoapp/dealer_details.html', {"reviews":reviews,"dealer_id":dealer_id})
 
 def add_review(request, dealer_id):
     if request.user.is_authenticated:

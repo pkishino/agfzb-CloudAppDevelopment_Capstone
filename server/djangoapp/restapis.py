@@ -84,9 +84,11 @@ def analyze_review_sentiments(text):
         "features":"sentiment",
         "return_analyzed_text":True
     }
-    response=get_request(api_url,**parameters)['sentiment']['document']['label']
-    print (response)
-    return response
+    response=get_request(api_url,**parameters)
+    if 'sentiment' in response.keys():
+        return response['sentiment']['document']['label']
+    else:
+        return 'neutral'
 
 
 
