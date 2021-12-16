@@ -17,24 +17,30 @@ def main(dict):
         reviews = client[databaseName]
     except CloudantException as ce:
         print("unable to connect")
-        return {"error": ce}
+        return {"error": ce,"code":500}
     except (requests.exceptions.RequestException, ConnectionResetError) as err:
         print("connection error")
-        return {"error": err}
+        return {"error": err,"code":500}
     if "review" in dict.keys():
         my_document = reviews.create_document(dict['review'])
-        # Check that the document exists in the database
         if my_document.exists():
             return my_document
     elif "dealerId" in dict.keys():
-        selector={"dealership":{"$eq":dict['dealerId']}}
+        selector={"dealership":{"$eq":int(dict['dealerId'])}}
         query = Query(reviews,fields=['id','name','dealership','review','purchase','purchase_date','car_make','car_model','car_year'],selector=selector)
         results=[]
         for result in QueryResult(query):
             results.append(result)
         if results:
-            return {"result":results}
+            return {"body":results}
         else:
-            return {"error":"The database is empty"}
+            return {"error":{
+                "code": 404,
+                "message": "dealerId does not exist",
+                "dict": dict
+                }}
     else:
-        return {"err": 'No parameters provided.' }
+        return {"error":{
+                "code": 400,
+                "message": "No parameters provided"
+                }}

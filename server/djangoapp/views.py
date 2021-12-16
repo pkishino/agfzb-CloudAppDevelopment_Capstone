@@ -88,7 +88,7 @@ def get_dealer_details(request, dealer_id):
         url = api_base+"/review"
         reviews = get_dealer_reviews_from_cf(url, dealerId=dealer_id)
         # return render(request, 'djangoapp/index.html', {"reviews":reviews})
-        return HttpResponse(' '.join([[review.review, review.sentiment] for review in reviews]))
+        return HttpResponse(' '.join(review.review+' '+review.sentiment for review in reviews))
 
 def add_review(request, dealer_id):
     if request.user.is_authenticated:

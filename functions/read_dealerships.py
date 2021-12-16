@@ -26,15 +26,18 @@ def main(dict):
         dealerships = client[databaseName]
     except CloudantException as ce:
         print("unable to connect")
-        return {"error": ce}
+        return {"error": ce,"code":500}
     except (requests.exceptions.RequestException, ConnectionResetError) as err:
         print("connection error")
-        return {"error": err}
-    
+        return {"error": err,"code":500}
+
+    message="The database is empty"
     if "state" in dict.keys():
         selector={"st":{"$eq":dict['state']}}
+        message="The state does not exist"
     elif "dealerId" in dict.keys():
-        selector={"id":{"$eq":dict['dealerId']}}
+        selector={"id":{"$eq":int(dict['dealerId'])}}
+        message="This dealership does not exist"
     else:
         selector={"id":{"$gte":0}}
         
@@ -43,6 +46,10 @@ def main(dict):
     for result in QueryResult(query):
         results.append(result)
     if results:
-        return {"result":results}
+        return {"body":results}
     else:
-        return {"error":"The database is empty"}
+        return {
+                "code":404,
+                "error":{
+                    "message": message
+                }}

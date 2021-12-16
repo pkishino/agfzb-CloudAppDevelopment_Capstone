@@ -6,7 +6,7 @@ from requests.auth import HTTPBasicAuth
 
 def get_request(url, **kwargs):
     print(kwargs)
-    print("GET from {} ".format(url))
+    
     try:
         if "api_key" in kwargs:
             params=dict()
@@ -24,6 +24,7 @@ def get_request(url, **kwargs):
                                     params=kwargs)
     except:
         print("Network exception occurred")
+    print("GET from {} ".format(response.url))
     status_code = response.status_code
     print("With status {} ".format(status_code))
     json_data = json.loads(response.text)
@@ -83,8 +84,9 @@ def analyze_review_sentiments(text):
         "features":"sentiment",
         "return_analyzed_text":True
     }
-
-    return get_request(api_url,**parameters)
+    response=get_request(api_url,**parameters)['sentiment']['document']['label']
+    print (response)
+    return response
 
 
 
