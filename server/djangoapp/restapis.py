@@ -1,6 +1,6 @@
 import requests
 import json
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
 
@@ -16,8 +16,8 @@ def get_request(url, **kwargs):
         print("Network exception occurred")
     status_code = response.status_code
     print("With status {} ".format(status_code))
-    print(response.url)
     json_data = json.loads(response.text)
+    print(json_data)
     return json_data
 
 
@@ -27,21 +27,28 @@ def get_request(url, **kwargs):
 
 def get_dealers_from_cf(url, **kwargs):
     results = []
-    # Call get_request with a URL parameter
     json_result = get_request(url,**kwargs)
-    if json_result:
-        print(json_result)
-        # Get the row list in JSON as dealers
+    if "body" in json_result.keys():
         dealers = json_result["body"]
-        # For each dealer object
         for dealer in dealers:
-            # Get its content in `doc` object
-            # Create a CarDealer object with values in `doc` object
             dealer_obj = CarDealer(address=dealer["address"], city=dealer["city"], full_name=dealer["full_name"],
                                    id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
                                    short_name=dealer["short_name"],state=dealer["state"],
                                    st=dealer["st"], zip=dealer["zip"])
             results.append(dealer_obj)
+
+    return results
+
+def get_dealer_reviews_from_cf(url, **kwargs):
+    results = []
+    json_result = get_request(url,**kwargs)
+    if "body" in json_result.keys():
+        reviews = json_result["body"]
+        for review in reviews:
+            review_obj = DealerReview(dealership=review["dealership"],name=review["name"],purchase=review["purchase"],
+                                        purchase_date=review["purchase_date"],review=review["review"],car_make=review["car_make"],car_model=review["car_model"],
+                                        car_year=review["car_year"],id=review["id"],sentiment="neutral")
+            results.append(review_obj)
 
     return results
 
