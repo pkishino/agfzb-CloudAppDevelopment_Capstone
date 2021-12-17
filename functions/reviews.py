@@ -7,7 +7,6 @@ import requests
 
 def main(dict):
     databaseName = "reviews"
-    
     try:
         client = Cloudant.iam(
             account_name=dict["COUCH_USERNAME"],
@@ -36,8 +35,7 @@ def main(dict):
         else:
             return {"error":{
                 "code": 404,
-                "message": "dealerId does not exist",
-                "dict": dict
+                "message": "dealerId does not exist"
                 }}
     else:
         return {"error":{
