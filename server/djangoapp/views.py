@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request, get_dealer_with_id_from_cf, get_dealer_with_state_from_cf, post_review, get_review_context
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request, get_dealer_with_id_from_cf, get_dealer_with_state_from_cf, post_review
+from .models import CarModel
 import logging
 import json
 
@@ -83,27 +84,27 @@ def add_review(request, dealer_id):
         return render(request, 'djangoapp/add_review.html',get_review_context(dealer_id))
     elif request.method == "POST":
         if request.user.is_authenticated:
-            model= get_object_or_404(CarModel, id=request.POST['car'])
+            purchased=request.POST['purchasecheck']=='on'
             review={
                 'name':request.user.first_name+' '+request.user.last_name,
                 'dealership': dealer_id,
-                'review': request.review
+                'review': request.POST['review_text'],
+                'purchase': purchased
             }
-                # new_review=dict()
-                # new_review["car_make"]="Volvo"
-                # new_review["car_model"]="V60cc"
-                # new_review["car_year"]=2020
-                # new_review["dealership"]=dealer_id
-                # new_review["id"]=1
-                # new_review["name"]="Smooth swede"
-                # new_review["purchase"]=True
-                # new_review["purchase_date"]="16/12/21"
-                # new_review["review"]="Enjoying the wilderness"
-                # post_response=post_review({"review":new_review})
-                # return HttpResponse(post_response)
-                return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
+            if purchased:
+                model= get_object_or_404(CarModel, id=request.POST['car'])
+                review["purchase_date":request.POST['purchasedate']]
+                review["car_make":model.car_make.name]
+                review["car_model":model.car_model]
+                review["car_year":model.car_year]
+            post_review(review)
+            return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
         else:
             context=get_review_context(dealer_id)
             context["message"]="Unauthenticated User Please Log in to Submit Review"
             return render(request, 'djangoapp/add_review.html', context)
 
+def get_review_context(dealer_id):
+    cars = CarModel.objects.all()
+    dealer = get_dealers_from_cf(dealerId=dealer_id)[0]
+    return {"dealer":dealer,"cars":cars}

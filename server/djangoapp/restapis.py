@@ -1,6 +1,6 @@
 import requests
 import json
-from .models import CarDealer, DealerReview, CarModel
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
 api_base="https://1b29c55a.au-syd.apigw.appdomain.cloud/api"
@@ -97,7 +97,4 @@ def post_review(review):
     url = api_base+"/review"
     return post_request(url, json_payload=review)
 
-def get_review_context(dealer_id):
-    cars = CarModel.objects.all()
-    dealer = get_dealers_from_cf(dealerId=dealer_id)[0]
-    return {"dealer":dealer,"cars":cars}
+
