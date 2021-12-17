@@ -28,7 +28,7 @@
                 </div>
                 <div class="form-group" id="purchaseddetails">
                     <label for="car"><b>Select car from {{ dealer.short_name }} to review</b></label>
-                    <select name="car" id="car" class="form-select" required>
+                    <select name="car" id="car" class="form-select">
                         {% for car in cars %}
                             <option selected
                                     value={{ car.id }}>{{ car.car_make.name }}-{{ car.car_model }}-{{ car.car_year|date:"Y" }}</option>

@@ -102,8 +102,9 @@ def add_review(request, dealer_id):
                 review["purchase_date"] = request.POST['purchasedate']
                 review["car_make"] = model.car_make.name
                 review["car_model"] = model.car_model
-                review["car_year"] = model.car_year
-            post_review({"review": review})
+                review["car_year"] = model.car_year.strftime("%Y")
+            post = post_review({"review": review})
+            print(post)
             return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
         else:
             context = get_review_context(dealer_id)
@@ -112,6 +113,6 @@ def add_review(request, dealer_id):
 
 
 def get_review_context(dealer_id):
-    cars = CarModel.objects.all()
+    cars = CarModel.objects.filter(dealer_id__exact=dealer_id)
     dealer = get_dealers_from_cf(dealerId=dealer_id)[0]
     return {"dealer": dealer, "cars": cars}
