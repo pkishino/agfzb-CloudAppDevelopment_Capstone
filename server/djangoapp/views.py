@@ -13,11 +13,14 @@ import json
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
+
 def about(request):
-     return render(request, 'djangoapp/about.html')
+    return render(request, 'djangoapp/about.html')
+
 
 def contact(request):
     return render(request, 'djangoapp/contact.html')
+
 
 def registration_request(request):
     context = {}
@@ -64,47 +67,51 @@ def logout_request(request):
     logout(request)
     return redirect('djangoapp:index')
 
+
 def home(request):
     return render(request, 'djangoapp/index.html')
+
 
 def get_dealerships(request):
     if request.method == "GET":
         dealerships = get_dealers_from_cf()
-        return render(request, 'djangoapp/dealerships.html', {'dealerships':dealerships})
+        return render(request, 'djangoapp/dealerships.html', {'dealerships': dealerships})
 
 
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         reviews = get_dealer_reviews_from_cf(dealerId=dealer_id)
         dealer = get_dealer_with_id_from_cf(dealer_id)[0]
-        return render(request, 'djangoapp/dealer_details.html', {"dealer_id":dealer_id,"reviews":reviews,"dealer":dealer})
+        return render(request, 'djangoapp/dealer_details.html', {"dealer_id": dealer_id, "reviews": reviews, "dealer": dealer})
+
 
 def add_review(request, dealer_id):
     if request.method == "GET":
-        return render(request, 'djangoapp/add_review.html',get_review_context(dealer_id))
+        return render(request, 'djangoapp/add_review.html', get_review_context(dealer_id))
     elif request.method == "POST":
         if request.user.is_authenticated:
-            purchased='purchasecheck' in request.POST.keys()
-            review={
-                'name':request.user.first_name+' '+request.user.last_name,
+            purchased = 'purchasecheck' in request.POST.keys()
+            review = {
+                'name': request.user.first_name+' '+request.user.last_name,
                 'dealership': dealer_id,
                 'review': request.POST['review_text'],
                 'purchase': purchased
             }
             if purchased:
-                model= get_object_or_404(CarModel, id=request.POST['car'])
-                review["purchase_date"]=request.POST['purchasedate']
-                review["car_make"]=model.car_make.name
-                review["car_model"]=model.car_model
-                review["car_year"]=model.car_year
-            post_review(review)
+                model = get_object_or_404(CarModel, id=request.POST['car'])
+                review["purchase_date"] = request.POST['purchasedate']
+                review["car_make"] = model.car_make.name
+                review["car_model"] = model.car_model
+                review["car_year"] = model.car_year
+            post_review({"review": review})
             return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
         else:
-            context=get_review_context(dealer_id)
-            context["message"]="Unauthenticated User Please Log in to Submit Review"
+            context = get_review_context(dealer_id)
+            context["message"] = "Unauthenticated User Please Log in to Submit Review"
             return render(request, 'djangoapp/add_review.html', context)
+
 
 def get_review_context(dealer_id):
     cars = CarModel.objects.all()
     dealer = get_dealers_from_cf(dealerId=dealer_id)[0]
-    return {"dealer":dealer,"cars":cars}
+    return {"dealer": dealer, "cars": cars}
