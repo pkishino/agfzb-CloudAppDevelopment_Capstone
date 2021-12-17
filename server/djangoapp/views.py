@@ -84,7 +84,7 @@ def add_review(request, dealer_id):
         return render(request, 'djangoapp/add_review.html',get_review_context(dealer_id))
     elif request.method == "POST":
         if request.user.is_authenticated:
-            purchased=request.POST['purchasecheck']=='on'
+            purchased='purchasecheck' in request.POST.keys()
             review={
                 'name':request.user.first_name+' '+request.user.last_name,
                 'dealership': dealer_id,
