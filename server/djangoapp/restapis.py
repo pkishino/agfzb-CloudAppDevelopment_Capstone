@@ -1,8 +1,9 @@
 import requests
 import json
-from .models import CarDealer, DealerReview
+from .models import CarDealer, DealerReview, CarModel
 from requests.auth import HTTPBasicAuth
 
+api_base="https://1b29c55a.au-syd.apigw.appdomain.cloud/api"
 
 def get_request(url, **kwargs):
     print(kwargs)
@@ -33,8 +34,7 @@ def get_request(url, **kwargs):
 
 def post_request(url, json_payload, **kwargs):
     print(kwargs)
-    print(json_payload)
-    print("POST to {} ".format(url))
+    print("POST to {} with:{}".format(url, json_payload))
     try:
         response = requests.post(url, params=kwargs, json=json_payload)
     except:
@@ -46,29 +46,32 @@ def post_request(url, json_payload, **kwargs):
     return json_data
 
 
-def get_dealers_from_cf(url, **kwargs):
+def get_dealers_from_cf(**kwargs):
+    url = api_base+"/dealership"
     results = []
     json_result = get_request(url,**kwargs)
     if "body" in json_result.keys():
         dealers = json_result["body"]
         for dealer in dealers:
-            dealer_obj = CarDealer(address=dealer["address"], city=dealer["city"], full_name=dealer["full_name"],
-                                   id=dealer["id"], lat=dealer["lat"], long=dealer["long"],
-                                   short_name=dealer["short_name"],state=dealer["state"],
-                                   st=dealer["st"], zip=dealer["zip"])
+            dealer_obj = CarDealer(**dealer)
             results.append(dealer_obj)
 
     return results
 
-def get_dealer_reviews_from_cf(url, **kwargs):
+def get_dealer_with_id_from_cf(dealer_id):
+    return get_dealers_from_cf(dealerId=dealer_id)
+
+def get_dealer_with_state_from_cf(state):
+    return get_dealers_from_cf(state=state)
+
+def get_dealer_reviews_from_cf(**kwargs):
+    url = api_base+"/review"
     results = []
     json_result = get_request(url,**kwargs)
-    if "body" in json_result.keys():
+    if json_result and "body" in json_result.keys():
         reviews = json_result["body"]
         for review in reviews:
-            review_obj = DealerReview(dealership=review["dealership"],name=review["name"],purchase=review["purchase"],
-                                        purchase_date=review["purchase_date"],review=review["review"],car_make=review["car_make"],car_model=review["car_model"],
-                                        car_year=review["car_year"],id=review["id"])
+            review_obj = DealerReview(**review)
             review_obj.sentiment=analyze_review_sentiments(review_obj.review)
             results.append(review_obj)
 
@@ -90,5 +93,11 @@ def analyze_review_sentiments(text):
     else:
         return 'neutral'
 
+def post_review(review):
+    url = api_base+"/review"
+    return post_request(url, json_payload=review)
 
-
+def get_review_context(dealer_id):
+    cars = CarModel.objects.all()
+    dealer = get_dealers_from_cf(dealerId=dealer_id)[0]
+    return {"dealer":dealer,"cars":cars}

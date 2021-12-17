@@ -29,10 +29,10 @@
                     {% endfor %}
                 </div>
             {% else %}
-                <p>No reviews</p>
+                <p>No reviews so far, be the first to add a review!</p>
             {% endif %}
             {% if user.is_authenticated %}
-                <form action="{% url 'djangoapp:dealer_review' dealer_id %}" method="get">
+                <form action="{% url 'djangoapp:add_review' dealer_id %}" method="get">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-primary">Add Review</button>
                 </form>
