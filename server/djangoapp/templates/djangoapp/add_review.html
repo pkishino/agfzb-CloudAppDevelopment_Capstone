@@ -26,7 +26,7 @@
                     <input class="form-check-input" type="checkbox" name="purchasecheck" id="purchasecheck">
                     <label class="form-check-label" for="purchasecheck">Previously purchased a car from {{ dealer.full_name }}?</label>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="purchaseddetails">
                     <label for="car"><b>Select car from {{ dealer.short_name }} to review</b></label>
                     <select name="car" id="car" class="form-select" required>
                         {% for car in cars %}
@@ -35,7 +35,7 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="form-group" id="purchaseddetails">
+                <div class="form-group">
                     <label for="purchasedate"><b>Purchase Date</b></label>
                     <input class="date-own form-control" type="text" name="purchasedate" id="purchasedate">
                 </div>
@@ -48,9 +48,9 @@
                format: 'mm/dd/yyyy'
              });
              $(document).ready(function(){
-                 $("purchaseddetails").hide()
-                 $("purchasecheck").click(function(){
-                    $("purchaseddetails").toggle();
+                 $("#purchaseddetails").hide()
+                 $("#purchasecheck").click(function(){
+                    $("#purchaseddetails").toggle();
                 });
             });
        </script>
