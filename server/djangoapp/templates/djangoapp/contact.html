@@ -15,17 +15,31 @@
 
     <body>
         {% include "djangoapp/navbar.html" %}
-
-            <h1>Contact details:</h1>
-            1 1 1 Infinity Road<br>
-            112233 Infinity City<br>
-            The Cloud<br>
-            Cloudland<br>
-            <h2>Office Phone:</h2>
-            +000000001<br>
-            <h2>Fax:</h2>
-            +000000011<br>
-
+        <div class="card-group">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Shop details:</h5>
+                <p class="card-text">
+                    1 1 1 Infinity Road<br>
+                    112233 Infinity City<br>
+                    The Cloud<br>
+                    Cloudland<br>
+                    </p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Office Phone:</h5>
+                <p class="card-text">+000000001</p>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Fax</h5>
+                <p class="card-text">+000000011</p>
+              </div>
+            </div>
+          </div>
     </body>
 
 </html>

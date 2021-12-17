@@ -15,8 +15,15 @@
 
     <body>
         {% include "djangoapp/navbar.html" %}
-        <h1>Welcome to Best Cars.</h1><br>
-        We provide details,reviews and more about a large variety of dealerships across the US
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to Best Cars.</h1>
+            <p class="lead">We provide details,reviews and more about a large variety of dealerships across the US</p>
+            <hr class="my-4">
+            <p>Checkout our list of dealerships!</p>
+            <p class="lead">
+              <a class="btn btn-primary btn-lg" href="{% url 'djangoapp:dealerships' %}" role="button">Find YOUR Dealer!</a>
+            </p>
+          </div>
     </body>
 
 </html>
